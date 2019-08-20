@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 int tamanio(char *linea)
 {
@@ -33,13 +34,13 @@ char quitarsalto(char *linea)
                                        
 int comparar(char *linea)
 {
-        
-  int count = 0;
+                               
+  int count = 0;       
   char *puntero2 = linea;
   char *exit = "exit";
-  char *env = "env";
-  int i = tamanio(exit);
+  int i = tamanio(exit);       
   while (puntero2[count])
+                                  
     {
                                         
       if (puntero2[count] != exit[count])
@@ -105,24 +106,44 @@ char **funciontok(char *linea)
   
 
 int main(int ac, char ** av)
-{
+{              
   size_t numbytes;
   ssize_t bytesleidos;
   char *linea;
   int comandos = 0;
-  char **tokens;
-  
+  char **tokens;  
+  char *linea2;
+  pid_t proceso;
+  int a;            
+  printf("-->$ ");
   while (bytesleidos = getline(&linea, &numbytes, stdin))
          
-    { 
-      quitarsalto(linea);                            comandos = comparar(linea);
-
+    {
+      linea2 = linea;
+      quitarsalto(linea);
+      tokens = funciontok(linea2);
+      comandos = comparar(tokens[0]);
+                                                                        
       if (comandos == 1)
-	return (1);
-    
-        funciontok(linea);
-                            
- }                     
+	exit(99);
+
+                  
+      proceso = fork();
+      if (comandos != 1 && proceso == 0)
+                         
+	{      
+	   
+	  	  
+	  a = execvp(tokens[0], tokens);
+	    if (a == -1)    
+            printf("sh: %d: %s: not found\n", comandos, tokens[0]);                       
+	}
+      else
+	if (comandos != 1)
+	  wait(NULL);
+      printf("-->$ ");
+      tokens = NULL;
+    }                      
    
   return (0);
 }
