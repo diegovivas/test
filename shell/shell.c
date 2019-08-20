@@ -104,10 +104,10 @@ char **funciontok(char *linea)
  
 }
   
-
-int main(int ac, char ** av)
-{              
-  size_t numbytes;
+                                                       
+int main(int ac, char **av,char **env)
+{
+   size_t numbytes;
   ssize_t bytesleidos;
   char *linea;
   int comandos = 0;
@@ -120,27 +120,28 @@ int main(int ac, char ** av)
          
     {
       linea2 = linea;
-      quitarsalto(linea);
-      tokens = funciontok(linea2);
-      comandos = comparar(tokens[0]);
+      if (quitarsalto(linea))
+	{
+	  tokens = funciontok(linea2);
+	  comandos = comparar(tokens[0]);
                                                                         
-      if (comandos == 1)
-	exit(99);
+	  if (comandos == 1)
+	    exit(99);
 
                   
-      proceso = fork();
-      if (comandos != 1 && proceso == 0)
+	  proceso = fork();
+	  if (comandos != 1 && proceso == 0)
                          
-	{      
-	   
-	  	  
-	  a = execvp(tokens[0], tokens);
-	    if (a == -1)    
-            printf("sh: %d: %s: not found\n", comandos, tokens[0]);                       
+	    {      
+                                          
+ 	      a = execve(tokens[0], tokens, env);
+	      if (a == -1)    
+		printf("sh: %d: %s: not found\n", comandos, tokens[0]);                       
+	    }
+	  else
+	    if (comandos != 1)
+	      wait(NULL);
 	}
-      else
-	if (comandos != 1)
-	  wait(NULL);
       printf("-->$ ");
       tokens = NULL;
     }                      
