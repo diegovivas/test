@@ -111,7 +111,6 @@ int main(int ac, char ** av)
   char *linea;
   int comandos = 0;
   char **tokens;
-  char *linea2;
   
   while (bytesleidos = getline(&linea, &numbytes, stdin))
          
@@ -120,8 +119,8 @@ int main(int ac, char ** av)
 
       if (comandos == 1)
 	return (1);
-                                         
-        funciontok(linea2);
+    
+        funciontok(linea);
                             
  }                     
    
