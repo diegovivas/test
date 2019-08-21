@@ -35,7 +35,8 @@ int comparar(char *linea)
 {
         
   int count = 0;
-  char *puntero2 = linea;
+  char *puntero2;
+  puntero2 = linea;
   char *exit = "exit";
   char *env = "env";
   int i = tamanio(exit);
@@ -53,22 +54,23 @@ int comparar(char *linea)
   return (1);
 }
                  
-int numerotokens(char *linea)
+int numerotokens(char *linea2)
 {
-  char *puntero = linea;
-  int cont = 0;
-  int cont2 = 1;
-  char *separador = " ";                               
-  while (puntero[cont] != '\0')
-    {
-      cont++;                   
-      if (puntero[cont] == separador[0])
+	char *puntero;
+	puntero = linea2;
+	int cont = 0;
+	int cont2 = 1;
+	char *separador = " ";                               
+	while (linea2[cont])
 	{
-	  cont2++;
-      	}
+		cont++;                   
+		if (puntero[cont] == separador[0])
+		{
+			cont2++;
+		}
       
-    }         
-  return (cont2);
+	}         
+	return (cont2);
 }
                               
 char **funciontok(char *linea)
@@ -108,22 +110,24 @@ int main(int ac, char ** av)
 {
   size_t numbytes;
   ssize_t bytesleidos;
-  char *linea;
+  char *linea ;
   int comandos = 0;
   char **tokens;
-  char *linea2;
   
   while (bytesleidos = getline(&linea, &numbytes, stdin))
          
     { 
-      quitarsalto(linea);                            comandos = comparar(linea);
+  
+    quitarsalto(linea);
+
+      comandos = comparar(linea);
 
       if (comandos == 1)
 	return (1);
                                          
-        funciontok(linea2);
+        funciontok(linea);
                             
- }                     
+    }                     
    
   return (0);
 }
