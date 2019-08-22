@@ -56,17 +56,17 @@ int main()
 
 		if(comparar(argv[0]))
 			exit(0);
-		env(environ);
+		env(environ, argv[0]);
+
 		pid = fork();
 		if(pid == 0)
 		{
                     
-			search_env(environ, argv);
-
+			
 			a = execve(argv[0], argv, environ);
 			if (a != 1)		
 				printf("sh: %d: %s: not found\n", b, argv[0]);
-
+			search_env(environ, argv);
 			exit(0);
 
 		}

@@ -45,14 +45,6 @@ int env(char **environ, char *linea)
 	}
 	return (1);
 }
-int earch_env(char **environ, char **arv)
-{
-	char *const env[2] = {"/bin/ls", NULL};
-
-	execve(env[0], arv, environ);
-	return(1);
-
-}
 int search_env(char **environ, char **arv)
 {
 	unsigned int i = 0;
@@ -90,7 +82,7 @@ int search_env(char **environ, char **arv)
 	ojo =	execve(token3[a],arv, environ);
 	a++;
 	}
-	exit(1);
+	return (1);
 }          
 char **concadenar(char **tokens, int numtokens,char *comando)
 {
@@ -174,7 +166,7 @@ int comparar_env(char *linea)
 	}
 	if (count == pat)
 		return(1);
-
+//incluir igual
 	return (0);
 }
                                   
