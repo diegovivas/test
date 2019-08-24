@@ -58,6 +58,8 @@ int search_env(char **environ, char **arv)
 	char **token3;
 	int a = 0; int contad = 1;
 	int ojo;
+	pid_t pid;
+
 	while(environ[i])
 	{
 		dos = comparar_env(environ[i]);
@@ -66,22 +68,22 @@ int search_env(char **environ, char **arv)
 		i++;
 	}
 	_strcpy(buf, environ[i]);
-	token1 = funciontok(buf, igual);
-	token2 = funciontok(token1[1], dospuntos);
+		token1 = funciontok(buf, igual);
+		token2 = funciontok(token1[1], dospuntos);
 
-	while(token2[a])
-	{	
-		a++;
-		contad++;
-	}
+		while(token2[a])
+		{	
+			a++;
+			contad++;
+		}
 
-        a = 0;
-	token3 = concadenar(token2, contad, arv[0]);
-	while(token3[a])
-	{
-	ojo =	execve(token3[a],arv, environ);
-	a++;
-	}
+		a = 0;
+		token3 = concadenar(token2, contad, arv[0]);         
+		while(token3[a])
+		{
+			execve(token3[a],arv, environ);
+			a++;
+		}
 	return (1);
 }          
 char **concadenar(char **tokens, int numtokens,char *comando)
@@ -117,11 +119,6 @@ char *concadenar2(char *dest, char *token, char *comando)
 	char *raya = "/";
 	while(a <  tam)
 	{
-		/*if (token[a] == 's' && token[a+1] == 'Q')
-		{
-			token[a+1] = '\0';
-			token[a+2] = '/';
-			}*/
 		if (token[a] != '\0')
 			dest[a] = token[a];
 		a++;
@@ -155,7 +152,7 @@ int comparar_env(char *linea)
 
 	int count = 0;
 	char *puntero2 = linea;
-	char *path = "PATH";
+	char *path = "PATH=";
 	int pat = tamanio(path);
 
 	while(path[count])

@@ -3,7 +3,7 @@
 int main()
 {
 	/* Create Proccess*/
-	pid_t pid;
+	pid_t pid = 0;
 	/* getline */
 	int gl, i, j, m;
 	char *buf = NULL;
@@ -30,10 +30,11 @@ int main()
 	while (1)
 	{
 		if (pid == -1)
-		{
-			perror("Error:");
-			exit(0);
-		}
+                {
+                        perror("Error:");
+                        exit(0);
+                }
+
 		printf("\33[1;31m%s@miniShell\33[0m:$ ", username);
 		if ((gl = getline(&buf, &num_line, stdin) == EOF))
 		{
@@ -55,26 +56,33 @@ int main()
 		} 
 
 		if(comparar(argv[0]))
+		{	
+			free(buf);
+			free(line_cmd);	
 			exit(0);
-		env(environ, argv[0]);
-
-		pid = fork();
-		if(pid == 0)
+		}
+		if(env(environ, argv[0]) == 0)
 		{
+			pid = fork();
+			if(pid == 0)
+			{
                     
 			
-			a = execve(argv[0], argv, environ);
-			if (a != 1)		
-				printf("sh: %d: %s: not found\n", b, argv[0]);
-			search_env(environ, argv);
-			exit(0);
+				a = execve(argv[0], argv, environ);
+				search_env(environ, argv);
+				if (a != 1)		
+					printf("sh: %d: %s: not found\n", b, argv[0]);
+				exit(0);
 
+			}
+			else
+			{
+				wait(&status);
+				kill(pid, SIGKILL);
+			}
 		}
-		else
-		{
-			wait(&status);
-			kill(pid, SIGKILL);
-		}
+		argv[1] = NULL;
+
 	}
 	free(line_cmd);
 	return (0);
