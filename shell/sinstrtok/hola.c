@@ -106,11 +106,12 @@ int numerotokens(char *linea,char *separador)
 void _path(char **argumentos, char **environ, int numtokens, int cont)
 {
 	unsigned int path = 0;
-
+	int ojo = 0;
 	if(comparar_envi(argumentos[0]) == 0)
 	{
 		path = search_env(argumentos, environ);
-		concadenar(environ[path], argumentos, environ, cont);
+	ojo = concadenar(environ[path], argumentos, environ, cont);
+
 	}
 }
 int comparar_envi(char *comando)
@@ -144,8 +145,8 @@ int concadenar(char *path, char **comando, char **environ, int cont)
 	pathfinal = malloc(sizeof(char) * tampath - 4);
 	if (pathfinal == NULL)
 		return(-1);
-	funcionpath(pathfinal, path, tampath);
-	paths = malloc(sizeof(char *) * (num + 1));
+	funcionpath(pathfinal, path, tampath, comando, environ);
+		paths = malloc(sizeof(char *) * (num + 1));
 	if (paths == NULL)
 		return(-1);
 	for (i = 0; i < (num + 1); ++i)
@@ -281,16 +282,26 @@ int _getline(char *linea)
 
 }
 */
-int funcionpath(char *pathfinal, char *path, int tam)
+int funcionpath(char *pathfinal, char *path, int tam, char **comando, char **environ)
 {
 	unsigned int cont = 0;
-	unsigned int igual = 6;
-	while(igual < tam)
+	unsigned int igual = 5;
+
+	if(path[5] == 58)
 	{
-		pathfinal[cont] = path[igual];
-		igual++;
-		cont++;
+		execve(comando[0],comando,environ);
 	}
+	if (igual < tam)
+	{
+		while(igual < tam)
+		{
+			pathfinal[cont] = path[igual];
+			igual++;
+			cont++;
+		}
+	}
+	else
+		execve(comando[0],comando, environ);
 }
 int search_env(char **argumentos, char **environ)
 {
@@ -313,6 +324,11 @@ int comparar_env(char *comando)
         unsigned int count = 0;
         char *path = "PATH=";
         unsigned int pat = tamanio(path);
+	char *dospuntos = ":";
+	if(path[0] == dospuntos[0])
+		count++;
+	if(path[0] == dospuntos[0])
+                count++;
 
         while(path[count])
         {
@@ -322,7 +338,9 @@ int comparar_env(char *comando)
         }
         if (count == pat)
                 return(1);
-        return (0);
+
+
+        return (1);
 }
 void funcion(char **arg,int num)
 {
@@ -334,6 +352,12 @@ void funcion(char **arg,int num)
         }
 }
 
+void SigintHandler(int sigint)
+{
+	(void) sigint;
+	signal (SIGINT, SigintHandler);
+	fflush(stdout);
+}
 
 int main(void)
 {
@@ -355,6 +379,7 @@ int main(void)
 	int status;
 	int gh = 0;
 /*aqui la del control + c */
+	signal(SIGINT, SigintHandler);
 
 	while(1)
 	{
@@ -371,11 +396,7 @@ int main(void)
 */ // sin getline.
 
 		if((bytesleidos = getline(&linea, &numbytes, stdin) == EOF))
-		{
-
 			exit(0);
-		}
-
 		quitarsalto(linea);
 		num = numerotokens(linea,separador);
 		if(comparar(linea) == 1)
