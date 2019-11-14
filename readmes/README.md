@@ -66,7 +66,7 @@ The console for AirBnb clone is designed to run with `Python 3.4.x`
 
 ## Installation
 
-   - Clone this repository: `git clone ""`
+   - Clone this repository: `git clone "https://github.com/JUCORTESA/AirBnB_clone.git"`
    - Change directories into the repository: `cd AirBnb_clone`
    - Run the console in interactive mode: `./console.py`
    - Or run the console in non-interactive mode: example `echo "<command>" | ./console.py`
